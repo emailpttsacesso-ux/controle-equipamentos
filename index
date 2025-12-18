@@ -5,33 +5,162 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle de Equipamentos</title>
     <style>
-        body { margin: 0; padding: 20px; font-family: Arial; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
-        .container { max-width: 500px; margin: 0 auto; background: white; border-radius: 20px; padding: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
-        h1 { color: white; text-align: center; margin-bottom: 30px; }
-        iframe { width: 100%; height: 80vh; border: none; border-radius: 15px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+        
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            color: #333;
+        }
+        
+        h1 {
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+        
+        .option-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            text-align: center;
+        }
+        
+        .option-card:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+            box-shadow: 0 10px 20px rgba(102,126,234,0.2);
+        }
+        
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            margin: 10px;
+            width: 100%;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .info {
+            margin-top: 30px;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
     <h1>📱 Controle de Equipamentos</h1>
-    <div class="container">
-        <iframe src="SUA_URL_DO_APPS_SCRIPT_AQUI" allow="camera"></iframe>
-    </div>
     
+    <div class="container">
+        <div class="option-card" onclick="openSystem()">
+            <div class="icon">🔐</div>
+            <h2>Acessar Sistema</h2>
+            <p>Clique para acessar o sistema completo de empréstimo e devolução</p>
+        </div>
+        
+        <div class="option-card" onclick="openDirect()">
+            <div class="icon">⚡</div>
+            <h2>Acesso Direto</h2>
+            <p>Abre em nova janela (recomendado para celular)</p>
+        </div>
+        
+        <div class="info">
+            <p><strong>Instruções:</strong></p>
+            <p>1. Para melhor experiência, use no celular</p>
+            <p>2. Permita pop-ups se solicitado</p>
+            <p>3. Use em tela cheia</p>
+        </div>
+    </div>
+
     <script>
-        // Substitua pela sua URL do Google Apps Script
-        const APP_URL = 'https://script.google.com/macros/s/SEU_ID/exec';
+        // URL do sistema
+        const SYSTEM_URL = 'redirect.html'; // Usa a página de redirecionamento
+        const DIRECT_URL = 'https://script.google.com/macros/s/SEU_ID/exec'; // URL direta
         
-        document.querySelector('iframe').src = APP_URL;
-        
-        // Suporte offline
-        if (!navigator.onLine) {
-            document.body.innerHTML = `
-                <div style="text-align:center;padding:50px;color:white;">
-                    <h2>⚠️ Offline</h2>
-                    <p>Conecte-se à internet</p>
-                </div>
-            `;
+        // Abrir via redirecionamento
+        function openSystem() {
+            window.open(SYSTEM_URL, '_blank');
         }
+        
+        // Abrir direto (para teste)
+        function openDirect() {
+            const newWindow = window.open(DIRECT_URL, '_blank', 
+                'width=500,height=800,scrollbars=yes,resizable=yes');
+            
+            if (!newWindow || newWindow.closed) {
+                alert('Popup bloqueado! Por favor, permita pop-ups para este site.');
+            }
+        }
+        
+        // Detectar dispositivo móvel
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        
+        // Se for mobile, tenta abrir automaticamente após 2 segundos
+        if (isMobile()) {
+            setTimeout(() => {
+                openSystem();
+            }, 2000);
+        }
+        
+        // Adicionar botão de ajuda
+        const helpBtn = document.createElement('button');
+        helpBtn.className = 'btn';
+        helpBtn.innerHTML = '❓ Precisa de ajuda?';
+        helpBtn.onclick = () => alert('1. Acesse no celular\n2. Use Chrome ou Safari\n3. Permita pop-ups\n4. PIN de teste: 1234');
+        document.querySelector('.container').appendChild(helpBtn);
     </script>
 </body>
 </html>
